@@ -7,6 +7,7 @@ import { gameRoomType } from "../types";
 import { socket } from "../../../utils";
 import { addGameType } from "../../../types/game";
 import { setSocketServer, useSession } from "../../../hooks";
+import { app, database } from "../../../../firebase";
 
 export const GameLobbyController: React.FunctionComponent = ({
 	gameRoomModel
@@ -16,6 +17,7 @@ export const GameLobbyController: React.FunctionComponent = ({
 	const [gameRooms, setGameRooms] = React.useState<gameRoomType[] | any[]>(
 		[]
 	);
+	const [roomNumber, setRoomNumber] = React.useState<number>(0);
 
 	const addRoom = () => {
 		const data = {
@@ -24,6 +26,14 @@ export const GameLobbyController: React.FunctionComponent = ({
 			masterUserId: session?.user?.id
 		};
 		setSocketServer("addGameRoom", data);
+
+		console.log("addRoom 클릭 ", roomNumber);
+		const roomInfo = {
+			owner: "hi" + roomNumber,
+			capacity: roomNumber
+		};
+
+		setRoomNumber(roomNumber + 1);
 	};
 
 	React.useEffect(() => {

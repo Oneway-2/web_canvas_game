@@ -4,14 +4,14 @@ import { userType } from "../../types";
 type Props = {
 	nextStep: () => void;
 	setMaxGame: React.Dispatch<React.SetStateAction<number>>;
-	doShake: () => void;
+	shakeUserList: () => void;
 	currentUser: userType[];
 };
 
 export const GameWaitingScreen: React.FunctionComponent<Props> = ({
 	nextStep,
 	setMaxGame,
-	doShake,
+	shakeUserList,
 	currentUser
 }) => (
 	<GameWaitingContainer>
@@ -32,7 +32,10 @@ export const GameWaitingScreen: React.FunctionComponent<Props> = ({
 						onChange={(e) => setMaxGame(parseInt(e.target.value))}
 					/>
 				</form>
-				<button className="shake-button" onClick={() => doShake()}>
+				<button
+					className="shake-button"
+					onClick={() => shakeUserList()}
+				>
 					Shake
 				</button>
 			</section>

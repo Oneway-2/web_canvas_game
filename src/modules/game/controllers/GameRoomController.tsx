@@ -121,6 +121,8 @@ export const GameRoomController: React.FunctionComponent = () => {
 		setSocketServer("nextStep", step);
 	};
 
+	const shakeUserList = () => {};
+
 	return (
 		<GameRoomView
 			step={step}
@@ -138,6 +140,7 @@ export const GameRoomController: React.FunctionComponent = () => {
 			handleChatFormSubmit={handleChatFormSubmit}
 			handleKeywordFormSubmit={handleKeywordFormSubmit}
 			removeKeywordItem={removeKeywordItem}
+			shakeUserList={shakeUserList}
 		/>
 	);
 };

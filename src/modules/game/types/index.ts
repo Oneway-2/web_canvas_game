@@ -6,6 +6,12 @@ export type gameRoomType = {
 	masterUserId: number | string;
 };
 
+export type newGameRoomType = {
+	ownerId: number | string;
+	roomNumber: number;
+	currentUser: number;
+};
+
 export type chatType = {
 	message: string;
 	name: string;

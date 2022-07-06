@@ -27,13 +27,13 @@ export const GameLobbyController: React.FunctionComponent = ({
 }: any) => {
 	const session = useSession();
 	const router = useRouter();
+	// const [roomNumber, setRoomNumber] = React.useState<number>(0);
 	const [gameRooms, setGameRooms] = React.useState<gameRoomType[] | any[]>(
 		[]
 	);
 	const [newGameRooms, setNewGameRooms] = React.useState<
 		newGameRoomType[] | any[]
 	>([]);
-	const [roomNumber, setRoomNumber] = React.useState<number>(0);
 	const storeDatabaseRef = collection(storeDatabase, "users");
 
 	// function writeUserData(
@@ -49,16 +49,39 @@ export const GameLobbyController: React.FunctionComponent = ({
 	// 	});
 	// }
 
-	const addRoom = async () => {
-		const data = {
-			title: session?.user?.name,
-			currentUser: 1,
-			masterUserId: session?.user?.id
-		};
-		setSocketServer("addGameRoom", data);
+	const sessionName = session?.user?.name;
+	const sessionId = session?.user?.id;
 
-		// 방 번호 출력 테스트
-		console.log("방 번호는 : ", roomNumber);
+	const addRoom = async () => {
+		// // Socket을 이용한 방생성
+		// const data = {
+		// 	title: sessionName,
+		// 	currentUser: 1,
+		// 	masterUserId: sessionId
+		// };
+		// setSocketServer("addGameRoom", data);
+
+		await set(ref(realtimeDatabase, "rooms/" + sessionId), {
+			ownerName: sessionName,
+			ownerId: sessionId,
+			currentUser: 1
+		})
+			.then(() => {
+				console.log(sessionName + "님의 방생성 완료");
+				// setRoomNumber(roomNumber + 1);
+			})
+			.catch((error) => {
+				console.log("에러 발생 : ", error);
+			});
+
+		const readRef = ref(realtimeDatabase, "rooms");
+		await onValue(readRef, (s) => {
+			const data = s.val();
+			console.log("불러온 데이터는", data);
+			console.log("newGameRooms는? ", newGameRooms);
+			// console.log(data[Object.keys(data)[0]].id);
+			// console.log(data[Object.keys(data)[1]]);
+		});
 
 		// // fireStore에 입력하는 테스트
 		// try {
@@ -99,11 +122,10 @@ export const GameLobbyController: React.FunctionComponent = ({
 
 		// const deleteRef = ref(realtimeDatabase, "users/" + "email");
 		// remove(deleteRef);
-
-		setRoomNumber(roomNumber + 1);
 	};
 
 	// React.useEffect(() => {
+	// 	console.log("useEffect : gameRooms:", gameRooms);
 	// 	socket.on(
 	// 		"addGameRoom",
 	// 		({ title, currentUser, masterUserId }: addGameType) => {
@@ -119,11 +141,23 @@ export const GameLobbyController: React.FunctionComponent = ({
 	// 	);
 	// }, [gameRooms]);
 
-	React.useEffect(() => {}, [newGameRooms]);
+	React.useEffect(() => {
+		async function asdf() {
+			const readRef = ref(realtimeDatabase, "rooms/");
+			let data;
+			await onValue(readRef, (snapShot) => {
+				data = snapShot.val();
+				setNewGameRooms(data);
+			});
+			console.log("useeffect 현재 담긴 data는", data);
+			asdf();
+		}
+	}, []);
 
 	return (
 		<GameLobbyView
 			gameRooms={gameRooms}
+			newGameRooms={newGameRooms}
 			addRoom={addRoom}
 			session={session}
 			router={router}

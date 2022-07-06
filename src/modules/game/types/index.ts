@@ -7,10 +7,9 @@ export type gameRoomType = {
 };
 
 export type newGameRoomType = {
-	roomNumber: number;
-	maxUser: number;
-	currentUser: number;
 	ownerId: number | string;
+	roomNumber: number;
+	currentUser: number;
 };
 
 export type chatType = {
